@@ -10,7 +10,7 @@ Go server core package (all common functionality shared between BetterMe service
 - Base web app with ping route (pkg/web)
 - Filesystems support (pkg/filesystem)
 - Env to store all open connections (pkg/env)
-
+- Base console app (pkg/console)
 
 # How to use?
 
