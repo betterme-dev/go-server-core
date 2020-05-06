@@ -28,12 +28,6 @@ func NewApp() *App {
 	viper.AutomaticEnv()
 	ctx, cancelFunc := context.WithCancel(context.Background())
 
-	if viper.GetBool("DEBUG") {
-		gin.SetMode(gin.DebugMode)
-	} else {
-		gin.SetMode(gin.ReleaseMode)
-	}
-
 	return &App{
 		ctx:        ctx,
 		cancelFunc: cancelFunc,
@@ -42,6 +36,12 @@ func NewApp() *App {
 }
 
 func (a *App) Run() error {
+	if viper.GetBool("DEBUG") {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	httpServer := http.Server{
 		Addr:           ":" + viper.GetString("PORT"),
 		Handler:        a.getHandler(),
