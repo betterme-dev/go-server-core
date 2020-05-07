@@ -3,6 +3,7 @@ package db
 import "fmt"
 
 type Config struct {
+	Driver   string
 	Username string
 	Password string
 	Host     string
@@ -12,8 +13,9 @@ type Config struct {
 
 func NewConfig() *Config {
 	return &Config{
-		Host: "localhost",
-		Port: 3306,
+		Driver: "mysql",
+		Host:   "localhost",
+		Port:   3306,
 	}
 }
 
