@@ -20,6 +20,7 @@ var (
 
 func NewConnection() (*sql.DB, error) {
 	dbConfig := NewConfig()
+	dbConfig.Driver = viper.GetString("DB_DRIVER")
 	dbConfig.Username = viper.GetString("DB_USERNAME")
 	dbConfig.Password = viper.GetString("DB_PASSWORD")
 	dbConfig.DbName = viper.GetString("DB_NAME")
@@ -32,9 +33,9 @@ func NewConnection() (*sql.DB, error) {
 }
 
 func NewWithConfig(config *Config) (*sql.DB, error) {
-	log.Infof("Connecting as %s to %s:%d/%s", config.Username, config.Host, config.Port, config.DbName)
+	log.Infof("Connecting to %s database as %s to %s:%d/%s", config.Driver, config.Username, config.Host, config.Port, config.DbName)
 
-	db, err := sql.Open("mysql", config.GetDsn())
+	db, err := sql.Open(config.Driver, config.GetDsn())
 	if err != nil {
 		return nil, err
 	}
