@@ -25,6 +25,12 @@ func NewConnection() (*sql.DB, error) {
 	dbConfig.Password = viper.GetString("DB_PASSWORD")
 	dbConfig.DbName = viper.GetString("DB_NAME")
 	dbConfig.Host = viper.GetString("DB_HOST")
+
+	port := viper.GetInt("DB_PORT")
+	if port != 0 {
+		dbConfig.Port = port
+	}
+
 	dbConn, err := NewWithConfig(dbConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to DB: %s", err)
