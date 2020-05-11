@@ -20,10 +20,17 @@ var (
 
 func NewConnection() (*sql.DB, error) {
 	dbConfig := NewConfig()
+	dbConfig.Driver = viper.GetString("DB_DRIVER")
 	dbConfig.Username = viper.GetString("DB_USERNAME")
 	dbConfig.Password = viper.GetString("DB_PASSWORD")
 	dbConfig.DbName = viper.GetString("DB_NAME")
 	dbConfig.Host = viper.GetString("DB_HOST")
+
+	port := viper.GetInt("DB_PORT")
+	if port != 0 {
+		dbConfig.Port = port
+	}
+
 	dbConn, err := NewWithConfig(dbConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to DB: %s", err)
@@ -32,18 +39,14 @@ func NewConnection() (*sql.DB, error) {
 }
 
 func NewWithConfig(config *Config) (*sql.DB, error) {
-	log.Infof("Connecting as %s to %s:%d/%s", config.Username, config.Host, config.Port, config.DbName)
+	log.Infof("Connecting to %s database as %s to %s:%d/%s", config.Driver, config.Username, config.Host, config.Port, config.DbName)
 
-	db, err := sql.Open("mysql", config.GetDsn())
+	db, err := sql.Open(config.Driver, config.GetDsn())
 	if err != nil {
 		return nil, err
 	}
 	if err = db.Ping(); err != nil {
 		return nil, err
-	}
-	maxConnections := viper.GetInt("DB_MAX_OPEN_CONNS")
-	if maxConnections > 0 {
-		db.SetMaxOpenConns(maxConnections)
 	}
 	return db, nil
 }
