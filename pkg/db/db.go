@@ -48,6 +48,11 @@ func NewWithConfig(config *Config) (*sql.DB, error) {
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
+	maxConnections := viper.GetInt("DB_MAX_OPEN_CONNS")
+	if maxConnections > 0 {
+		db.SetMaxOpenConns(maxConnections)
+	}
+
 	return db, nil
 }
 
