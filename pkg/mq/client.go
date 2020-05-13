@@ -11,6 +11,10 @@ import (
 	"time"
 )
 
+const (
+	defaultMaxGoroutinesCount int = 1024
+)
+
 // Client encapsulates a pointer to an amqp.Connection
 type Client struct {
 	conn *amqp.Connection
@@ -84,6 +88,12 @@ func (c *Client) Subscribe(queueName string, handlerFunc func(amqp.Delivery, cha
 		log.Warnf("failed to read QoS prefetch value: %s", err)
 	}
 
+	// Set max goroutines count if configured
+	maxGoroutinesCount, err := strconv.Atoi(os.Getenv("MQ_MAX_GOROUTINES_COUNT"))
+	if err != nil {
+		maxGoroutinesCount = defaultMaxGoroutinesCount
+	}
+
 	msgs, err := ch.Consume(
 		queue.Name, // queue
 		"",         // consumer
@@ -97,7 +107,7 @@ func (c *Client) Subscribe(queueName string, handlerFunc func(amqp.Delivery, cha
 		return errors.Wrap(err, "failed to register a consumer")
 	}
 
-	go consumeLoop(msgs, handlerFunc, done)
+	go consumeLoop(msgs, handlerFunc, done, maxGoroutinesCount)
 
 	return nil
 }
@@ -141,8 +151,8 @@ func (c *Client) Close() {
 	}
 }
 
-func consumeLoop(deliveries <-chan amqp.Delivery, handlerFunc func(d amqp.Delivery, c chan struct{}), done <-chan bool) {
-	maxGoroutines := make(chan struct{}, 1024) // prevent too much of concurrency
+func consumeLoop(deliveries <-chan amqp.Delivery, handlerFunc func(d amqp.Delivery, c chan struct{}), done <-chan bool, maxGoroutinesCount int) {
+	maxGoroutines := make(chan struct{}, maxGoroutinesCount) // prevent too much of concurrency
 	for {
 		select {
 		case d, ok := <-deliveries:
