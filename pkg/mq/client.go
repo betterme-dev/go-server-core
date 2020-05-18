@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"github.com/streadway/amqp"
 	"net"
 	"os"
@@ -89,8 +90,8 @@ func (c *Client) Subscribe(queueName string, handlerFunc func(amqp.Delivery, cha
 	}
 
 	// Set max goroutines count if configured
-	maxGoroutinesCount, err := strconv.Atoi(os.Getenv("MQ_MAX_GOROUTINES_COUNT"))
-	if err != nil {
+	maxGoroutinesCount := viper.GetInt("MQ_MAX_GOROUTINES_COUNT")
+	if maxGoroutinesCount == 0 {
 		maxGoroutinesCount = defaultMaxGoroutinesCount
 	}
 
