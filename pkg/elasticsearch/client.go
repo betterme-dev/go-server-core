@@ -56,14 +56,13 @@ func (es *ES) DoSearch(query gin.H, index string) (gin.H, error) {
 		var e gin.H
 		if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
 			return nil, fmt.Errorf("error parsing the response body: %s", err)
-		} else {
-			// Print the response status and error information.
-			return nil, fmt.Errorf("[%s] %s: %s",
-				res.Status(),
-				e["error"].(gin.H)["type"],
-				e["error"].(gin.H)["reason"],
-			)
 		}
+		// Print the response status and error information.
+		return nil, fmt.Errorf("[%s] %s: %s",
+			res.Status(),
+			e["error"].(gin.H)["type"],
+			e["error"].(gin.H)["reason"],
+		)
 	}
 
 	var r gin.H
