@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/aws/aws-sdk-go v1.25.25
+	github.com/elastic/go-elasticsearch/v7 v7.7.0
 	github.com/getsentry/sentry-go v0.3.0
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-sql-driver/mysql v1.4.1
