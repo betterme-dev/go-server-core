@@ -1,6 +1,8 @@
 # What is this?
 
-Go server core package (all common functionality shared between BetterMe services written on go)
+Public go server core package (all common functionality shared between BetterMe services written on go)
+
+**WARNING** Do not push business logic, only common packages
 
 # Whats included?
 
