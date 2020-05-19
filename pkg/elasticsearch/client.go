@@ -15,16 +15,14 @@ type ES struct {
 	Client *elasticsearch7.Client
 }
 
-func NewClient() (*ES, error) {
+func NewClient() (es *ES, err error) {
 	cfg := elasticsearch7.Config{
 		Addresses: []string{
 			viper.GetString("ELASTICSEARCH_ADDRESS"),
 		},
 	}
 
-	var err error
-	es := &ES{}
-
+	es = &ES{}
 	es.Client, err = elasticsearch7.NewClient(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("can't create elasticsearch client: %s", err)
@@ -32,7 +30,7 @@ func NewClient() (*ES, error) {
 
 	log.Info("Elasticsearch client created ")
 
-	return es, nil
+	return
 }
 
 func (es *ES) DoSearch(query gin.H, index string) (gin.H, error) {
@@ -52,6 +50,7 @@ func (es *ES) DoSearch(query gin.H, index string) (gin.H, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error getting response: %s", err)
 	}
+	defer res.Body.Close()
 
 	if res.IsError() {
 		var e gin.H
@@ -66,7 +65,6 @@ func (es *ES) DoSearch(query gin.H, index string) (gin.H, error) {
 			)
 		}
 	}
-	defer res.Body.Close()
 
 	var r gin.H
 	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
