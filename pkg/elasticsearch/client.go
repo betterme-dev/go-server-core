@@ -1,13 +1,13 @@
 package elasticsearch
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	elasticsearch7 "github.com/elastic/go-elasticsearch/v7"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 type ES struct {
@@ -27,22 +27,31 @@ func NewClient() (es *ES, err error) {
 		return nil, fmt.Errorf("can't create elasticsearch client: %s", err)
 	}
 
-	log.Info("Elasticsearch client created ")
+	log.Info("Elasticsearch client created")
 
 	return
 }
 
-func (es *ES) DoSearch(query map[string]interface{}, index string) (map[string]interface{}, error) {
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(query); err != nil {
-		return nil, fmt.Errorf("error encoding query: %s", err)
+func (es *ES) DoSearch(query string, index string) (map[string]interface{}, error) {
+	isValid := json.Valid([]byte(query))
+	if isValid == false {
+		return nil, fmt.Errorf("query string(JSON) not valid: %s", query)
 	}
+
+	log.Infof("JSON query is valid: %s", query)
+
+	// Build a new string from JSON query
+	var b strings.Builder
+	b.WriteString(query)
+
+	// Instantiate a *strings.Reader object from string
+	body := strings.NewReader(b.String())
 
 	client := es.Client
 	res, err := client.Search(
 		client.Search.WithContext(context.Background()),
 		client.Search.WithIndex(index),
-		client.Search.WithBody(&buf),
+		client.Search.WithBody(body),
 		client.Search.WithTrackTotalHits(true),
 		client.Search.WithPretty(),
 	)
