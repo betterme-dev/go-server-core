@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	elasticsearch7 "github.com/elastic/go-elasticsearch/v7"
-	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -33,7 +32,7 @@ func NewClient() (es *ES, err error) {
 	return
 }
 
-func (es *ES) DoSearch(query gin.H, index string) (gin.H, error) {
+func (es *ES) DoSearch(query map[string]interface{}, index string) (map[string]interface{}, error) {
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
 		return nil, fmt.Errorf("error encoding query: %s", err)
@@ -53,19 +52,19 @@ func (es *ES) DoSearch(query gin.H, index string) (gin.H, error) {
 	defer res.Body.Close()
 
 	if res.IsError() {
-		var e gin.H
+		var e map[string]interface{}
 		if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
 			return nil, fmt.Errorf("error parsing the response body: %s", err)
 		}
 		// Print the response status and error information.
 		return nil, fmt.Errorf("[%s] %s: %s",
 			res.Status(),
-			e["error"].(gin.H)["type"],
-			e["error"].(gin.H)["reason"],
+			e["error"].(map[string]interface{})["type"],
+			e["error"].(map[string]interface{})["reason"],
 		)
 	}
 
-	var r gin.H
+	var r map[string]interface{}
 	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 		return nil, fmt.Errorf("error parsing the response body: %s", err)
 	}
