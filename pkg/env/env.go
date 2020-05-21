@@ -31,6 +31,7 @@ func SetQueue(q *mq.Client) {
 func SetElasticSearch(es *elasticsearch.ES) {
 	current().ES = es
 }
+
 func SetFS(fs *afero.Fs) {
 	current().FS = fs
 }
