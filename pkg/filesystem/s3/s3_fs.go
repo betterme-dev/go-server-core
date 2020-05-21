@@ -23,7 +23,7 @@ type Fs struct {
 var _ afero.Fs = (*Fs)(nil)
 
 // NewFs creates a new Fs object writing files to a given S3 bucket.
-func NewFs(bucket string, s3API s3iface.S3API) *Fs {
+func NewFs(bucket string, s3API s3iface.S3API) afero.Fs {
 	return &Fs{bucket: bucket, s3API: s3API}
 }
 
