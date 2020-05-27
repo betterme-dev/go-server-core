@@ -48,6 +48,10 @@ func ES() *elasticsearch.ES {
 	return current().ES
 }
 
+func FS() *afero.Fs {
+	return current().FS
+}
+
 func current() *Env {
 	if e == nil {
 		e = New()
