@@ -178,9 +178,7 @@ func (f *File) Read(p []byte) (int, error) {
 		// mimic os.File's read after close behavior
 		panic("read after close")
 	}
-	if f.offset != 0 {
-		panic("TODO: non-offset == 0 read")
-	}
+
 	if len(p) == 0 {
 		return 0, nil
 	}
@@ -196,7 +194,7 @@ func (f *File) Read(p []byte) (int, error) {
 	}()
 
 	n, err := output.Body.Read(p)
-	f.offset += n
+
 	return n, err
 }
 
@@ -239,9 +237,6 @@ func (f *File) Write(p []byte) (int, error) {
 		// mimic os.File's write after close behavior
 		panic("write after close")
 	}
-	if f.offset != 0 {
-		panic("TODO: non-offset == 0 write")
-	}
 	readSeeker := bytes.NewReader(p)
 	size := int(readSeeker.Size())
 	if _, err := f.s3API.PutObject(&s3.PutObjectInput{
@@ -252,7 +247,7 @@ func (f *File) Write(p []byte) (int, error) {
 	}); err != nil {
 		return 0, err
 	}
-	f.offset += size
+
 	return size, nil
 }
 
