@@ -224,12 +224,10 @@ func (fs Fs) statDirectory(name string) (os.FileInfo, error) {
 
 // Chmod is TODO
 func (Fs) Chmod(name string, mode os.FileMode) error {
-	panic("implement Chmod")
-	return nil
+	return NotImplementedError{Error{Message: "implement Chmod"}}
 }
 
 // Chtimes is TODO
 func (Fs) Chtimes(name string, atime time.Time, mtime time.Time) error {
-	panic("implement Chtimes")
-	return nil
+	return NotImplementedError{Error{Message: "implement Chtimes"}}
 }
