@@ -12,8 +12,8 @@ var e *Env
 type Env struct {
 	Db       *sql.DB
 	MqClient *mq.Client
-	ES       *elasticsearch.ES
-	FS       *afero.Fs
+	Es       *elasticsearch.ES
+	Fs       *afero.Fs
 }
 
 func New() *Env {
@@ -29,11 +29,11 @@ func SetQueue(q *mq.Client) {
 }
 
 func SetElasticSearch(es *elasticsearch.ES) {
-	current().ES = es
+	current().Es = es
 }
 
 func SetFS(fs *afero.Fs) {
-	current().FS = fs
+	current().Fs = fs
 }
 
 func DB() *sql.DB {
@@ -45,11 +45,11 @@ func Queue() *mq.Client {
 }
 
 func ES() *elasticsearch.ES {
-	return current().ES
+	return current().Es
 }
 
 func FS() *afero.Fs {
-	return current().FS
+	return current().Fs
 }
 
 func current() *Env {
