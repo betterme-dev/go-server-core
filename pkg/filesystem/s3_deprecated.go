@@ -10,10 +10,14 @@ import (
 	"github.com/spf13/viper"
 )
 
+// DEPRECATED
+// Please use Env.FS instead to work with S3 filesystem
 var s3sess = session.Must(session.NewSession(&aws.Config{
 	Region: aws.String(viper.GetString("AWS_REGION")),
 }))
 
+// DEPRECATED
+// Please use Env.FS instead to work with S3 filesystem
 func DeleteS3File(bucket string, filename string) error {
 	svc := s3.New(s3sess)
 	input := &s3.DeleteObjectInput{
@@ -28,6 +32,8 @@ func DeleteS3File(bucket string, filename string) error {
 	return nil
 }
 
+// DEPRECATED
+// Please use Env.FS instead to work with S3 filesystem
 func DownloadS3File(bucket string, filename string) ([]byte, error) {
 	downloader := s3manager.NewDownloader(s3sess)
 	buff := &aws.WriteAtBuffer{}
@@ -43,6 +49,8 @@ func DownloadS3File(bucket string, filename string) ([]byte, error) {
 	return buff.Bytes(), nil
 }
 
+// DEPRECATED
+// Please use Env.FS instead to work with S3 filesystem
 func UploadS3File(bucket string, filename string, content string) error {
 	uploader := s3manager.NewUploader(s3sess)
 	_, err := uploader.Upload(&s3manager.UploadInput{

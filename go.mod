@@ -11,6 +11,7 @@ require (
 	github.com/huandu/go-sqlbuilder v1.4.2
 	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.4.2
+	github.com/spf13/afero v1.1.2
 	github.com/spf13/viper v1.4.0
 	github.com/streadway/amqp v0.0.0-20190815230801-eade30b20f1d
 	github.com/urfave/cli v1.22.4
