@@ -1,22 +1,22 @@
 package s3
 
 type (
-	Error struct {
+	FSError struct {
 		Message string
 	}
 
 	NotImplementedError struct {
-		Error
+		FSError
 	}
 
 	FileClosedError struct {
-		Error
+		FSError
 	}
 	UndefinedWhenceError struct {
-		Error
+		FSError
 	}
 )
 
-func (e Error) Error() string {
+func (e FSError) Error() string {
 	return e.Message
 }
