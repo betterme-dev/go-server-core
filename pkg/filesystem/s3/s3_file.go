@@ -153,7 +153,7 @@ func (f *File) Sync() error {
 // It does not change the I/O offset.
 // If there is an error, it will be of type *PathError.
 func (f *File) Truncate(_ int64) error {
-	return NotImplementedError{Error{Message: "implement truncated"}}
+	return NotImplementedError{FSError{Message: "implement truncated"}}
 }
 
 // WriteString is like Write, but writes the contents of string s rather than
@@ -175,7 +175,7 @@ func (f *File) Close() error {
 func (f *File) Read(p []byte) (int, error) {
 	if f.closed {
 		// mimic os.File's read after close behavior
-		return 0, FileClosedError{Error{Message: "read after close"}}
+		return 0, FileClosedError{FSError{Message: "read after close"}}
 	}
 
 	if len(p) == 0 {
@@ -223,7 +223,7 @@ func (f *File) Seek(offset int64, whence int) (int64, error) {
 		f.offset += int(offset)
 	case 2:
 		// can probably do this if we had GetObjectOutput (ContentLength)
-		return 0, UndefinedWhenceError{Error{Message: "TODO: whence == 2 seek"}}
+		return 0, UndefinedWhenceError{FSError{Message: "TODO: whence == 2 seek"}}
 	}
 
 	return int64(f.offset), nil
@@ -235,7 +235,7 @@ func (f *File) Seek(offset int64, whence int) (int64, error) {
 func (f *File) Write(p []byte) (int, error) {
 	if f.closed {
 		// mimic os.File's write after close behavior
-		return 0, FileClosedError{Error{Message: "write after close"}}
+		return 0, FileClosedError{FSError{Message: "write after close"}}
 	}
 	readSeeker := bytes.NewReader(p)
 	size := int(readSeeker.Size())
