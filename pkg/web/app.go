@@ -23,7 +23,7 @@ type App struct {
 	cancelFunc context.CancelFunc
 }
 
-func (a *App) Context() context.Context {
+func (a App) Context() context.Context {
 	return a.ctx
 }
 
@@ -39,7 +39,7 @@ func NewApp() *App {
 	}
 }
 
-func (a App) Run() error {
+func (a *App) Run() error {
 	if viper.GetBool("DEBUG") {
 		gin.SetMode(gin.DebugMode)
 	} else {
