@@ -39,7 +39,7 @@ func NewApp() *App {
 	}
 }
 
-func (a *App) Run() error {
+func (a App) Run() error {
 	if viper.GetBool("DEBUG") {
 		gin.SetMode(gin.DebugMode)
 	} else {
