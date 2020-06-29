@@ -23,6 +23,10 @@ type App struct {
 	cancelFunc context.CancelFunc
 }
 
+func (a *App) Context() context.Context {
+	return a.ctx
+}
+
 // NewApp creates a new web Application with some reasonable default settings
 func NewApp() *App {
 	viper.AutomaticEnv()
