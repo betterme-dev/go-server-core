@@ -2,8 +2,11 @@ package env
 
 import (
 	"database/sql"
+
 	"github.com/betterme-dev/go-server-core/pkg/elasticsearch"
 	"github.com/betterme-dev/go-server-core/pkg/mq"
+	"github.com/betterme-dev/go-server-core/pkg/neo4j"
+
 	"github.com/spf13/afero"
 )
 
@@ -14,6 +17,7 @@ type Env struct {
 	MqClient *mq.Client
 	Es       *elasticsearch.ES
 	Fs       *afero.Fs
+	Neo4j    *neo4j.Neo4j
 }
 
 func New() *Env {
@@ -36,6 +40,10 @@ func SetFS(fs *afero.Fs) {
 	current().Fs = fs
 }
 
+func SetNeo4j(n *neo4j.Neo4j) {
+	current().Neo4j = n
+}
+
 func DB() *sql.DB {
 	return current().Db
 }
@@ -46,6 +54,10 @@ func Queue() *mq.Client {
 
 func ES() *elasticsearch.ES {
 	return current().Es
+}
+
+func Neo4j() *neo4j.Neo4j {
+	return current().Neo4j
 }
 
 func FS() *afero.Fs {
