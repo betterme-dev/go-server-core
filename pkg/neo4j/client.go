@@ -13,10 +13,10 @@ type Neo4j struct {
 }
 
 func NewClient() (*Neo4j, error) {
-	configForNeo4j40 := func(conf *neo4j.Config) { conf.Encrypted = false }
+	config := func(conf *neo4j.Config) { conf.Encrypted = false }
 
 	var err error
-	n := &Neo4j{}
+	n := new(Neo4j)
 	n.Client, err = neo4j.NewDriver(
 		fmt.Sprintf(
 			"%s://%s:%s",
@@ -29,7 +29,7 @@ func NewClient() (*Neo4j, error) {
 			viper.GetString("NEO4J_PASSWORD"),
 			"",
 		),
-		configForNeo4j40,
+		config,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to neo4j: %w", err)
