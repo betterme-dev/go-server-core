@@ -9,7 +9,6 @@ require (
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/huandu/go-sqlbuilder v1.4.2
-	github.com/isayme/go-amqp-reconnect v0.0.0-20180930040740-e71660afb5ca
 	github.com/neo4j/neo4j-go-driver v1.8.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.4.2
