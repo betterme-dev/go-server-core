@@ -8,8 +8,7 @@ import (
 )
 
 type Neo4j struct {
-	Client  neo4j.Driver
-	Session neo4j.Session
+	Client neo4j.Driver
 }
 
 func NewClient() (*Neo4j, error) {
@@ -33,13 +32,6 @@ func NewClient() (*Neo4j, error) {
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to neo4j: %w", err)
-	}
-
-	// For multidatabase support, set sessionConfig.DatabaseName to requested database
-	sessionConfig := neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite}
-	n.Session, err = n.Client.NewSession(sessionConfig)
-	if err != nil {
-		return nil, fmt.Errorf("failed to start neo4j session: %w", err)
 	}
 
 	return n, nil
