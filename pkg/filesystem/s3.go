@@ -7,10 +7,17 @@ import (
 	"github.com/spf13/afero"
 )
 
-func NewS3Fs(region string, bucket string) afero.Fs {
+type (
+	S3FsFactory struct {
+		Bucket string
+		Region string
+	}
+)
+
+func (sfs S3FsFactory) New() afero.Fs {
 	sess, _ := session.NewSession(&aws.Config{
-		Region: aws.String(region),
+		Region: aws.String(sfs.Region),
 	})
 
-	return s3.NewFs(bucket, sess)
+	return s3.NewFs(sfs.Bucket, sess)
 }
