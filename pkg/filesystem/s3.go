@@ -8,16 +8,16 @@ import (
 )
 
 type (
-	S3FsFactory struct {
+	S3Config struct {
 		Bucket string
 		Region string
 	}
 )
 
-func (sfs S3FsFactory) New() afero.Fs {
+func NewS3Fs(conf S3Config) afero.Fs {
 	sess, _ := session.NewSession(&aws.Config{
-		Region: aws.String(sfs.Region),
+		Region: aws.String(conf.Region),
 	})
 
-	return s3.NewFs(sfs.Bucket, sess)
+	return s3.NewFs(conf.Bucket, sess)
 }

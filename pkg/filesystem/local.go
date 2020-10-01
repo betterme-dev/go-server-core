@@ -4,10 +4,6 @@ import (
 	"github.com/spf13/afero"
 )
 
-type (
-	LocalFsFactory struct{}
-)
-
-func (lfs LocalFsFactory) New() afero.Fs {
+func NewLocalFs() afero.Fs {
 	return afero.NewOsFs()
 }
