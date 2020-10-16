@@ -14,24 +14,34 @@ import (
 
 const (
 	defaultMaxGoroutinesCount int = 1024
+	defaultConnectTimeout     int = 2000 // in milliseconds
 )
 
-// Client encapsulates a pointer to an amqp.Connection
+// Client encapsulates a pointer to an rabbitmq.Connection
 type Client struct {
 	conn *rabbitmq.Connection
 }
 
 func NewConnection() (*rabbitmq.Connection, error) {
-	rabbitmq.Debug = true
-
 	rabbitUser := os.Getenv("MQ_USERNAME")
 	rabbitPass := os.Getenv("MQ_PASSWORD")
 	rabbitHost := os.Getenv("MQ_HOST")
 	rabbitPort := os.Getenv("MQ_PORT")
 	rabbitVhost := os.Getenv("MQ_VHOST")
+	connectTimeout := os.Getenv("MQ_CONNECT_TIMEOUT")
+	if connectTimeout == "" {
+		connectTimeout = string(rune(defaultConnectTimeout))
+	}
 
-	amqpUri := "amqp://" + rabbitUser + ":" + rabbitPass + "@" + rabbitHost + ":" + rabbitPort + "//" + rabbitVhost
-	amqpConn, err := rabbitmq.Dial(amqpUri)
+	amqpURI := fmt.Sprintf("amqp://%s:%s@%s:%s//%s?connection_timeout=%s",
+		rabbitUser,
+		rabbitPass,
+		rabbitHost,
+		rabbitPort,
+		rabbitVhost,
+		connectTimeout,
+	)
+	amqpConn, err := rabbitmq.Dial(amqpURI)
 	if err != nil {
 		return nil, err
 	}
