@@ -2,14 +2,14 @@ package mq
 
 import (
 	"fmt"
+	"os"
+	"strconv"
+
+	"github.com/isayme/go-amqp-reconnect/rabbitmq"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/streadway/amqp"
-	"net"
-	"os"
-	"strconv"
-	"time"
 )
 
 const (
@@ -18,24 +18,20 @@ const (
 
 // Client encapsulates a pointer to an amqp.Connection
 type Client struct {
-	conn *amqp.Connection
+	conn *rabbitmq.Connection
 }
 
-func NewConnection() (*amqp.Connection, error) {
+func NewConnection() (*rabbitmq.Connection, error) {
+	rabbitmq.Debug = true
+
 	rabbitUser := os.Getenv("MQ_USERNAME")
 	rabbitPass := os.Getenv("MQ_PASSWORD")
 	rabbitHost := os.Getenv("MQ_HOST")
 	rabbitPort := os.Getenv("MQ_PORT")
 	rabbitVhost := os.Getenv("MQ_VHOST")
 
-	amqpUri := "amqp://" + rabbitUser + ":" + rabbitPass + "@" + rabbitHost + ":" + rabbitPort
-	amqpConfig := amqp.Config{
-		Vhost: "/" + rabbitVhost,
-		Dial: func(network, addr string) (net.Conn, error) {
-			return net.DialTimeout(network, addr, 2*time.Second) // FIXME move timeout to config
-		},
-	}
-	amqpConn, err := amqp.DialConfig(amqpUri, amqpConfig)
+	amqpUri := "amqp://" + rabbitUser + ":" + rabbitPass + "@" + rabbitHost + ":" + rabbitPort + "/" + rabbitVhost
+	amqpConn, err := rabbitmq.Dial(amqpUri)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +48,7 @@ func NewClient() (*Client, error) {
 	return &Client{conn: amqpConn}, nil
 }
 
-func NewQueueForChannel(name string, ch *amqp.Channel) (q amqp.Queue, err error) {
+func NewQueueForChannel(name string, ch *rabbitmq.Channel) (q amqp.Queue, err error) {
 	args := make(amqp.Table)
 	args["x-max-priority"] = int64(10)
 
