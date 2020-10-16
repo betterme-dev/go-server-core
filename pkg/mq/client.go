@@ -30,7 +30,7 @@ func NewConnection() (*rabbitmq.Connection, error) {
 	rabbitPort := os.Getenv("MQ_PORT")
 	rabbitVhost := os.Getenv("MQ_VHOST")
 
-	amqpUri := "amqp://" + rabbitUser + ":" + rabbitPass + "@" + rabbitHost + ":" + rabbitPort + "/" + rabbitVhost
+	amqpUri := "amqp://" + rabbitUser + ":" + rabbitPass + "@" + rabbitHost + ":" + rabbitPort + "//" + rabbitVhost
 	amqpConn, err := rabbitmq.Dial(amqpUri)
 	if err != nil {
 		return nil, err
