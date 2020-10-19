@@ -23,22 +23,22 @@ type Client struct {
 }
 
 func NewConnection() (*rabbitmq.Connection, error) {
-	rabbitUser := os.Getenv("MQ_USERNAME")
-	rabbitPass := os.Getenv("MQ_PASSWORD")
-	rabbitHost := os.Getenv("MQ_HOST")
-	rabbitPort := os.Getenv("MQ_PORT")
-	rabbitVhost := os.Getenv("MQ_VHOST")
-	connectTimeout := os.Getenv("MQ_CONNECT_TIMEOUT")
+	user := viper.GetString("MQ_USERNAME")
+	pass := viper.GetString("MQ_PASSWORD")
+	host := viper.GetString("MQ_HOST")
+	port := viper.GetString("MQ_PORT")
+	vhost := viper.GetString("MQ_VHOST")
+	connectTimeout := viper.GetString("MQ_CONNECT_TIMEOUT")
 	if connectTimeout == "" {
 		connectTimeout = string(rune(defaultConnectTimeout))
 	}
 
 	amqpURI := fmt.Sprintf("amqp://%s:%s@%s:%s//%s?connection_timeout=%s",
-		rabbitUser,
-		rabbitPass,
-		rabbitHost,
-		rabbitPort,
-		rabbitVhost,
+		user,
+		pass,
+		host,
+		port,
+		vhost,
 		connectTimeout,
 	)
 	amqpConn, err := rabbitmq.Dial(amqpURI)
@@ -121,7 +121,7 @@ func (c *Client) Subscribe(queueName string, handlerFunc func(amqp.Delivery, cha
 
 func (c *Client) Publish(queueName string, body []byte) error {
 	if c.conn == nil {
-		return fmt.Errorf("tried to send message before connection was initialized")
+		return errors.New("tried to send message before connection was initialized")
 	}
 	ch, err := c.conn.Channel() // Get a channel from the connection
 	if err != nil {
@@ -149,6 +149,7 @@ func (c *Client) Publish(queueName string, body []byte) error {
 			Body:        body, // Our JSON body as []byte
 		})
 	log.Infof("A message was sent to queue %s: %s", queueName, body)
+
 	return err
 }
 
