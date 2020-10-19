@@ -2,40 +2,46 @@ package mq
 
 import (
 	"fmt"
+	"os"
+	"strconv"
+
+	"github.com/isayme/go-amqp-reconnect/rabbitmq"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/streadway/amqp"
-	"net"
-	"os"
-	"strconv"
-	"time"
 )
 
 const (
 	defaultMaxGoroutinesCount int = 1024
+	defaultConnectTimeout     int = 2000 // in milliseconds
 )
 
-// Client encapsulates a pointer to an amqp.Connection
+// Client encapsulates a pointer to an rabbitmq.Connection
 type Client struct {
-	conn *amqp.Connection
+	conn *rabbitmq.Connection
 }
 
-func NewConnection() (*amqp.Connection, error) {
-	rabbitUser := os.Getenv("MQ_USERNAME")
-	rabbitPass := os.Getenv("MQ_PASSWORD")
-	rabbitHost := os.Getenv("MQ_HOST")
-	rabbitPort := os.Getenv("MQ_PORT")
-	rabbitVhost := os.Getenv("MQ_VHOST")
-
-	amqpUri := "amqp://" + rabbitUser + ":" + rabbitPass + "@" + rabbitHost + ":" + rabbitPort
-	amqpConfig := amqp.Config{
-		Vhost: "/" + rabbitVhost,
-		Dial: func(network, addr string) (net.Conn, error) {
-			return net.DialTimeout(network, addr, 2*time.Second) // FIXME move timeout to config
-		},
+func NewConnection() (*rabbitmq.Connection, error) {
+	user := viper.GetString("MQ_USERNAME")
+	pass := viper.GetString("MQ_PASSWORD")
+	host := viper.GetString("MQ_HOST")
+	port := viper.GetString("MQ_PORT")
+	vhost := viper.GetString("MQ_VHOST")
+	connectTimeout := viper.GetString("MQ_CONNECT_TIMEOUT")
+	if connectTimeout == "" {
+		connectTimeout = string(rune(defaultConnectTimeout))
 	}
-	amqpConn, err := amqp.DialConfig(amqpUri, amqpConfig)
+
+	amqpURI := fmt.Sprintf("amqp://%s:%s@%s:%s//%s?connection_timeout=%s",
+		user,
+		pass,
+		host,
+		port,
+		vhost,
+		connectTimeout,
+	)
+	amqpConn, err := rabbitmq.Dial(amqpURI)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +58,7 @@ func NewClient() (*Client, error) {
 	return &Client{conn: amqpConn}, nil
 }
 
-func NewQueueForChannel(name string, ch *amqp.Channel) (q amqp.Queue, err error) {
+func NewQueueForChannel(name string, ch *rabbitmq.Channel) (q amqp.Queue, err error) {
 	args := make(amqp.Table)
 	args["x-max-priority"] = int64(10)
 
@@ -115,7 +121,7 @@ func (c *Client) Subscribe(queueName string, handlerFunc func(amqp.Delivery, cha
 
 func (c *Client) Publish(queueName string, body []byte) error {
 	if c.conn == nil {
-		return fmt.Errorf("tried to send message before connection was initialized")
+		return errors.New("tried to send message before connection was initialized")
 	}
 	ch, err := c.conn.Channel() // Get a channel from the connection
 	if err != nil {
@@ -143,6 +149,7 @@ func (c *Client) Publish(queueName string, body []byte) error {
 			Body:        body, // Our JSON body as []byte
 		})
 	log.Infof("A message was sent to queue %s: %s", queueName, body)
+
 	return err
 }
 
