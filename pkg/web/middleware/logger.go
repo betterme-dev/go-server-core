@@ -42,6 +42,7 @@ func Logger(c *gin.Context) {
 			"error": errors,
 		}).Error(path)
 	} else {
+		// all codes below 400 and 404 not critical errors so we log them with error level "info"
 		if statusCode < http.StatusBadRequest || statusCode == http.StatusNotFound {
 			logger.Info(path)
 		} else {
