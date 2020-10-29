@@ -1,9 +1,10 @@
 package logger
 
 import (
+	"strings"
+
 	"github.com/getsentry/sentry-go"
 	log "github.com/sirupsen/logrus"
-	"strings"
 )
 
 type SentryHook struct {

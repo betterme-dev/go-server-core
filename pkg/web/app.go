@@ -2,15 +2,17 @@ package web
 
 import (
 	"context"
-	"github.com/betterme-dev/go-server-core/pkg/web/handlers"
-	"github.com/betterme-dev/go-server-core/pkg/web/middleware"
-	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+
+	"github.com/betterme-dev/go-server-core/pkg/web/handlers"
+	"github.com/betterme-dev/go-server-core/pkg/web/middleware"
 )
 
 // App is the main structure of a web application. It is recommended that
