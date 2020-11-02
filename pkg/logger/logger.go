@@ -1,10 +1,11 @@
 package logger
 
 import (
+	"time"
+
 	"github.com/getsentry/sentry-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"time"
 )
 
 // Setup initializes all logger settings and log handlers

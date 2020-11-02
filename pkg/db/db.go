@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/betterme-dev/go-server-core/pkg/env"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/huandu/go-sqlbuilder"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+
+	"github.com/betterme-dev/go-server-core/pkg/env"
 )
 
 var (
