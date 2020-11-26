@@ -34,12 +34,11 @@ func NewClient() (es *ES, err error) {
 }
 
 func (es *ES) DoSearch(query string, index string) (map[string]interface{}, error) {
-	isValid := json.Valid([]byte(query))
-	if isValid == false {
+	if isValid := json.Valid([]byte(query)); !isValid {
 		return nil, fmt.Errorf("query string(JSON) not valid: %s", query)
 	}
 
-	log.Infof("JSON query is valid: %s", query)
+	log.Debugf("JSON query is valid: %s", query)
 
 	// Build a new string from JSON query
 	var b strings.Builder
