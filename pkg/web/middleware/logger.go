@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -41,12 +40,5 @@ func Logger(c *gin.Context) {
 		logger.WithFields(log.Fields{
 			"error": errors,
 		}).Error(path)
-	} else {
-		// all codes below 400 and 404 not critical errors so we log them with error level "info"
-		if statusCode > http.StatusCreated && statusCode < http.StatusBadRequest {
-			logger.Info(path)
-		} else {
-			logger.Error(path)
-		}
 	}
 }
