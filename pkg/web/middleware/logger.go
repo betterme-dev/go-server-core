@@ -43,7 +43,7 @@ func Logger(c *gin.Context) {
 		}).Error(path)
 	} else {
 		// all codes below 400 and 404 not critical errors so we log them with error level "info"
-		if statusCode < http.StatusBadRequest {
+		if statusCode > http.StatusCreated && statusCode < http.StatusBadRequest {
 			logger.Info(path)
 		} else {
 			logger.Error(path)
