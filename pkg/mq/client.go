@@ -174,3 +174,17 @@ func consumeLoop(deliveries <-chan amqp.Delivery, handlerFunc func(d amqp.Delive
 		}
 	}
 }
+
+/*
+NotifyClose registers a listener for close events either initiated by an error
+accompanying a connection.close method or by a normal shutdown.
+
+On normal shutdowns, the chan will be closed.
+
+To reconnect after a transport or protocol error, register a listener here and
+re-run your setup process.
+
+*/
+func (c *Client) NotifyClose(receiver chan *amqp.Error) chan *amqp.Error {
+	return c.conn.Connection.NotifyClose(receiver)
+}
