@@ -27,7 +27,7 @@ func neo4jCheck() healthcheck.Check {
 	return func() error {
 		c, err := neo4j.NewClient()
 		if c == nil || err != nil {
-			return fmt.Errorf("can`t connect to nei4j")
+			return fmt.Errorf("can`t connect to neo4j")
 		}
 
 		return nil

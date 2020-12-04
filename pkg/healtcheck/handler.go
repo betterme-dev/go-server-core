@@ -23,7 +23,7 @@ Usage example:
 	}
 	probs := healtcheck.ConfigHandler(checks, checks)
 
-With our Gin app:
+  With our Gin app:
 	app := web.NewApp()
 	app.Engine.Handle("GET", "/ready", gin.WrapF(probs.ReadyEndpoint))
 	app.Engine.Handle("GET", "/live", gin.WrapF(probs.LiveEndpoint))
