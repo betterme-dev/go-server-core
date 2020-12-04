@@ -1,7 +1,7 @@
 package healtcheck
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/heptiolabs/healthcheck"
 
@@ -9,25 +9,33 @@ import (
 	"github.com/betterme-dev/go-server-core/pkg/neo4j"
 )
 
-func RabbitMQCheck() healthcheck.Check {
+func rabbitMQCheck() healthcheck.Check {
 	return func() error {
 		mqConn := env.Queue()
 		if mqConn == nil {
-			return errors.New("rabbitMQ connection is nil")
+			return fmt.Errorf("rabbitMQ connection is nil")
 		}
 		if mqConn.IsConnectionClosed() {
-			return errors.New("rabbitMQ connection closed")
+			return fmt.Errorf("rabbitMQ connection closed")
 		}
+
 		return nil
 	}
 }
 
-func Neo4jCheck() healthcheck.Check {
+func neo4jCheck() healthcheck.Check {
 	return func() error {
 		c, err := neo4j.NewClient()
 		if c == nil || err != nil {
-			return errors.New("can`t connect to nei4j")
+			return fmt.Errorf("can`t connect to nei4j")
 		}
+
 		return nil
+	}
+}
+
+func redisCheck() healthcheck.Check {
+	return func() error {
+		panic("implement me")
 	}
 }

@@ -9,6 +9,11 @@ import (
 	"github.com/betterme-dev/go-server-core/pkg/env"
 )
 
+type Checks []hatcheckLib.Check
+
+const DBTimeout = 1 * time.Second
+const ESTimeout = 1 * time.Second
+
 /**
 Usage example:
 	checks := healtcheck.Checks{
@@ -24,9 +29,6 @@ With our Gin app:
 	app.Engine.Handle("GET", "/live", gin.WrapF(probs.LiveEndpoint))
 
 */
-
-type Checks []hatcheckLib.Check
-
 func ConfigHandler(readiness Checks, liveness Checks) hatcheckLib.Handler {
 	handler := hatcheckLib.NewHandler()
 	for name, check := range readiness {
@@ -41,17 +43,21 @@ func ConfigHandler(readiness Checks, liveness Checks) hatcheckLib.Handler {
 }
 
 func DB() hatcheckLib.Check {
-	return hatcheckLib.DatabasePingCheck(env.DB(), 1*time.Second)
+	return hatcheckLib.DatabasePingCheck(env.DB(), DBTimeout)
 }
 
 func ElasticSearch() hatcheckLib.Check {
-	return hatcheckLib.HTTPGetCheck(viper.GetString("ELASTICSEARCH_ADDRESS"), 1*time.Second)
+	return hatcheckLib.HTTPGetCheck(viper.GetString("ELASTICSEARCH_ADDRESS"), ESTimeout)
 }
 
 func RabbitMQ() hatcheckLib.Check {
-	return RabbitMQCheck()
+	return rabbitMQCheck()
 }
 
 func Neo4j() hatcheckLib.Check {
-	return Neo4jCheck()
+	return neo4jCheck()
+}
+
+func Redis() hatcheckLib.Check {
+	return redisCheck()
 }
