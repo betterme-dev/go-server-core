@@ -13,7 +13,8 @@ import (
 var e *Env
 
 type Env struct {
-	Db       *sql.DB
+	DB       *sql.DB
+	DBSlave  *sql.DB
 	MqClient *mq.Client
 	Es       *elasticsearch.ES
 	Fs       *afero.Fs
@@ -25,7 +26,11 @@ func New() *Env {
 }
 
 func SetDB(db *sql.DB) {
-	current().Db = db
+	current().DB = db
+}
+
+func SetDBSlave(db *sql.DB) {
+	current().DBSlave = db
 }
 
 func SetQueue(q *mq.Client) {
@@ -45,7 +50,14 @@ func SetNeo4j(n *neo4j.Neo4j) {
 }
 
 func DB() *sql.DB {
-	return current().Db
+	return current().DB
+}
+
+func DBSlave() *sql.DB {
+	if current().DBSlave != nil {
+		return current().DBSlave
+	}
+	return current().DB
 }
 
 func Queue() *mq.Client {
