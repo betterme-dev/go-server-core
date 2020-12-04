@@ -178,11 +178,3 @@ func consumeLoop(deliveries <-chan amqp.Delivery, handlerFunc func(d amqp.Delive
 func (c *Client) IsConnectionClosed() bool {
 	return c.conn.Connection.IsClosed()
 }
-
-func (c *Client) IsChannelClosed() bool {
-	ch, err := c.conn.Channel()
-	if err != nil {
-		return true
-	}
-	return ch.IsClosed()
-}
