@@ -9,6 +9,22 @@ import (
 	"github.com/betterme-dev/go-server-core/pkg/env"
 )
 
+/**
+Usage example:
+	checks := healtcheck.Checks{
+		healtcheck.DB(),
+		healtcheck.ElasticSearch(),
+		healtcheck.RabbitMQ(),
+	}
+	probs := healtcheck.ConfigHandler(checks, checks)
+
+With our Gin app:
+	app := web.NewApp()
+	app.Engine.Handle("GET", "/ready", gin.WrapF(probs.ReadyEndpoint))
+	app.Engine.Handle("GET", "/live", gin.WrapF(probs.LiveEndpoint))
+
+*/
+
 type Checks []hatcheckLib.Check
 
 func ConfigHandler(readiness Checks, liveness Checks) hatcheckLib.Handler {
