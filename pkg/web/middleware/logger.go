@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -37,8 +38,10 @@ func Logger(c *gin.Context) {
 	})
 
 	if errors != "" {
-		logger.WithFields(log.Fields{
-			"error": errors,
-		}).Error(path)
+		if statusCode > http.StatusNotFound {
+			logger.WithFields(log.Fields{
+				"error": errors,
+			}).Error(path)
+		}
 	}
 }
