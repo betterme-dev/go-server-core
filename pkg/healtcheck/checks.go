@@ -36,6 +36,6 @@ func neo4jCheck() healthcheck.Check {
 
 func redisCheck() healthcheck.Check {
 	return func() error {
-		panic("implement me")
+		return fmt.Errorf("redis check not implemented")
 	}
 }
