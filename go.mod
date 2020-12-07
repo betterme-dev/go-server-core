@@ -9,6 +9,7 @@ require (
 	github.com/getsentry/sentry-go v0.3.0
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/heptiolabs/healthcheck v0.0.0-20180807145615-6ff867650f40
 	github.com/huandu/go-sqlbuilder v1.4.2
 	github.com/isayme/go-amqp-reconnect v0.0.0-20180930040740-e71660afb5ca
 	github.com/neo4j/neo4j-go-driver v1.8.0
@@ -18,4 +19,5 @@ require (
 	github.com/spf13/viper v1.4.0
 	github.com/streadway/amqp v0.0.0-20190815230801-eade30b20f1d
 	github.com/urfave/cli v1.22.4
+	gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0 // indirect
 )
