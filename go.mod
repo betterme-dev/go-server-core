@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/aws/aws-sdk-go v1.31.3
+	github.com/doug-martin/goqu/v9 v9.10.0
 	github.com/elastic/go-elasticsearch/v7 v7.7.0
 	github.com/fclairamb/afero-s3 v0.1.0
 	github.com/getsentry/sentry-go v0.3.0
