@@ -33,23 +33,39 @@ func (s Service) User() (*user.User, error) {
 }
 
 func (s *Service) AuthByBearerToken(token string) bool {
-	usr, err := user.NewService().GetUserByAuthToken(token)
+	usrSrv := user.NewService()
+	// check user data (deprecated)
+	usr, err := usrSrv.UserByAuthToken(token)
+	if err == nil && usr != nil && usr.AuthKeyExpires >= time.Now().Unix() {
+		return s.prepareUser(usr)
+	}
+	// check user-session data
+	usrSes, err := usrSrv.SessionByAuthToken(token)
 	if err != nil {
 		log.Error(err)
 		return false
 	}
-	if usr == nil {
-		log.Debugf("User with token %s not found", token)
+	if usrSes.ExpiresAt <= time.Now().Unix() {
+		log.Debugf("Seesion token is expired")
 		return false
 	}
-	if usr.AuthKeyExpires <= time.Now().Unix() {
-		log.Debugf("Token %s is expired", token)
+	usr, err = usrSrv.UserByID(usrSes.UserID)
+	if err != nil {
+		log.Error(err)
+		return false
+	}
+	return s.prepareUser(usr)
+}
+
+func (s *Service) prepareUser(usr *user.User) bool {
+	if usr == nil {
 		return false
 	}
 	s.user = user.User{
 		ID:             usr.ID,
 		AuthKeyExpires: usr.AuthKeyExpires,
 	}
-	log.Debugf("Logged in userID: %d", usr.ID)
+	log.Debug("Logged in userID: ", usr.ID)
+
 	return true
 }

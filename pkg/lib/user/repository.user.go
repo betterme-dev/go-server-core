@@ -8,8 +8,7 @@ import (
 )
 
 const (
-	TableNameUser        = "user"
-	TableNameUserSession = "user_session"
+	TableNameUser = "user"
 )
 
 type Repository struct {
@@ -24,7 +23,28 @@ func NewRepository() Repository {
 	}
 }
 
-func (r Repository) GetByAuthKey(authKey string) (*User, error) {
+func (r Repository) ByID(id int) (*User, error) {
+	log.Debugf("Search user by user ID '%d' in table %s", id, r.table)
+	var user User
+	found, err := r.db.
+		From(r.table).
+		Select("id", "auth_key_expires").
+		Where(
+			goqu.C("id").Eq(id),
+		).
+		Limit(1).
+		ScanStruct(&user)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, nil
+	}
+
+	return &user, nil
+}
+
+func (r Repository) ByAuthKey(authKey string) (*User, error) {
 	log.Debugf("Search user by authKey '%s' in table %s", authKey, r.table)
 	var user User
 	found, err := r.db.
