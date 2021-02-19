@@ -9,6 +9,7 @@ require (
 	github.com/fclairamb/afero-s3 v0.1.0
 	github.com/getsentry/sentry-go v0.3.0
 	github.com/gin-gonic/gin v1.4.0
+	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/heptiolabs/healthcheck v0.0.0-20180807145615-6ff867650f40
 	github.com/huandu/go-sqlbuilder v1.4.2
