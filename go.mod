@@ -19,6 +19,7 @@ require (
 	github.com/spf13/afero v1.2.2
 	github.com/spf13/viper v1.4.0
 	github.com/streadway/amqp v0.0.0-20190815230801-eade30b20f1d
+	github.com/stretchr/testify v1.5.1
 	github.com/urfave/cli v1.22.4
 	gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0 // indirect
 )

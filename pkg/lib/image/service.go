@@ -12,7 +12,7 @@ func NewService() Service {
 	return Service{Repository: NewRepository()}
 }
 
-func (s Service) ImagesByIds(ids []uint64, quality Quality) ([]ImageFile, error) {
+func (s Service) ImagesByIds(ids []uint, quality Quality) ([]ImageFile, error) {
 	res, err := s.Repository.ImagesByIds(ids, ProviderS3, quality)
 	if err != nil {
 		return nil, err
@@ -54,13 +54,13 @@ func (s Service) ImagesByIds(ids []uint64, quality Quality) ([]ImageFile, error)
 	return res, nil
 }
 
-func notFoundImages(ids []uint64, images []ImageFile) []uint64 {
-	result := make([]uint64, 0)
+func notFoundImages(ids []uint, images []ImageFile) []uint {
+	result := make([]uint, 0)
 	if len(images) < len(ids) {
 		for _, id := range ids {
 			found := false
 			for _, image := range images {
-				if id == uint64(image.ImageID) {
+				if id == uint(image.ImageID) {
 					found = true
 				}
 			}

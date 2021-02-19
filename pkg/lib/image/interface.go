@@ -2,6 +2,6 @@ package image
 
 type (
 	Provider interface {
-		ImagesByIds(ids []uint64, quality Quality) ([]ImageFile, error)
+		ImagesByIds(ids []uint, quality Quality) ([]ImageFile, error)
 	}
 )

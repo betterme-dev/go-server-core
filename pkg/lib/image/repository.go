@@ -19,7 +19,7 @@ func NewRepository() Repository {
 	}
 }
 
-func (r Repository) ImagesByIds(ids []uint64, provider uint, quality Quality) ([]ImageFile, error) {
+func (r Repository) ImagesByIds(ids []uint, provider uint, quality Quality) ([]ImageFile, error) {
 	var images []ImageFile
 	if len(ids) == 0 {
 		return images, nil

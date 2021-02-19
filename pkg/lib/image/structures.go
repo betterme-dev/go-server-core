@@ -1,22 +1,16 @@
 package image
 
-// DB Representation
 type (
+	// DB Representation
 	ImageFile struct {
 		ImageID uint32 `db:"image_id"`
 		URL     string `db:"url"`
 	}
-)
-
-// DTO
-type (
+	// DTO
 	Image struct {
 		ID uint32
 	}
-)
-
-// Other
-type (
+	// Other
 	Quality int64
 )
 
