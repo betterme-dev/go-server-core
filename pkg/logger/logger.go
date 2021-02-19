@@ -8,6 +8,52 @@ import (
 	"github.com/spf13/viper"
 )
 
+// SetupWithOptions initializes all logger settings and log handlers
+func SetupWithOptions(opt Options) (func(), func(err error)) {
+	// detect log level
+	switch opt.Level {
+	case "debug":
+		viper.SetDefault("DEBUG", true)
+		log.SetLevel(log.DebugLevel)
+	case "info":
+		log.SetLevel(log.InfoLevel)
+	default:
+		log.SetLevel(log.WarnLevel)
+	}
+	// set default handlers
+	deferHandler := func() {
+		if r := recover(); r != nil {
+			log.Fatalf("panic: %s", r)
+		}
+	}
+	errHandler := func(err error) {
+		log.Error(err)
+	}
+	// prepare Sentry if needed
+	if opt.Sentry.DSN != "" {
+		err := sentry.Init(sentry.ClientOptions{
+			Dsn:              opt.Sentry.DSN,
+			Environment:      opt.Sentry.AppEnv,
+			Release:          opt.Sentry.AppVersion,
+			AttachStacktrace: true,
+		})
+		if err == nil {
+			log.AddHook(new(SentryHook))
+			deferHandler = func() {
+				sentry.Flush(time.Second * 5)
+				sentry.Recover()
+			}
+			errHandler = func(err error) {
+				sentry.CaptureException(err)
+			}
+		} else {
+			log.Errorf("Failed to init sentry logger: %s", err)
+		}
+	}
+
+	return deferHandler, errHandler
+}
+
 // Setup initializes all logger settings and log handlers
 func Setup() (func(), func(err error)) {
 	// detect log level

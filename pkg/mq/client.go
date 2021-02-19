@@ -58,6 +58,10 @@ func NewClient() (*Client, error) {
 	return &Client{conn: amqpConn}, nil
 }
 
+func NewClientWithConnection(conn *rabbitmq.Connection) (*Client, error) {
+	return &Client{conn: conn}, nil
+}
+
 func NewQueueForChannel(name string, ch *rabbitmq.Channel) (q amqp.Queue, err error) {
 	args := make(amqp.Table)
 	args["x-max-priority"] = int64(10)

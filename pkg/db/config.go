@@ -29,7 +29,7 @@ func (dbc *Config) GetDsn() string {
 	switch dbc.Driver {
 	case "mysql":
 		if dbc.Username != "" {
-			dsn = fmt.Sprintf("%s", dbc.Username)
+			dsn = dbc.Username
 		}
 		if dbc.Password != "" {
 			dsn = fmt.Sprintf("%s:%s", dsn, dbc.Password)
