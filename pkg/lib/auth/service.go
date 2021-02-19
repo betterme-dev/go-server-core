@@ -34,9 +34,10 @@ func (s Service) User() (*user.User, error) {
 
 func (s *Service) AuthByBearerToken(token string) bool {
 	usrSrv := user.NewService()
+	now := int(time.Now().Unix())
 	// check user data (deprecated)
 	usr, err := usrSrv.UserByAuthToken(token)
-	if err == nil && usr != nil && usr.AuthKeyExpires >= time.Now().Unix() {
+	if err == nil && usr != nil && usr.AuthKeyExpires > now {
 		return s.prepareUser(usr)
 	}
 	// check user-session data
@@ -45,7 +46,7 @@ func (s *Service) AuthByBearerToken(token string) bool {
 		log.Error(err)
 		return false
 	}
-	if usrSes.ExpiresAt <= time.Now().Unix() {
+	if usrSes.ExpiresAt <= now {
 		log.Debugf("Seesion token is expired")
 		return false
 	}

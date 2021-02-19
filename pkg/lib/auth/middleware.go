@@ -13,7 +13,7 @@ const JSONContentType = "application/json; charset=utf-8"
 
 type ContextKey string
 
-var AuthCtxKey ContextKey = "auth"
+var CtxKey ContextKey = "auth"
 
 func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +33,7 @@ func Middleware(next http.Handler) http.Handler {
 		}
 
 		ctx := r.Context()
-		ctx = context.WithValue(ctx, AuthCtxKey, &authService)
+		ctx = context.WithValue(ctx, CtxKey, &authService)
 
 		// Calls the next handler, which can be another middleware in the chain, or the final handler.
 		next.ServeHTTP(w, r.WithContext(ctx))
@@ -41,7 +41,7 @@ func Middleware(next http.Handler) http.Handler {
 }
 
 func ServiceFromCtx(ctx context.Context) *Service {
-	auth, ok := ctx.Value(AuthCtxKey).(*Service)
+	auth, ok := ctx.Value(CtxKey).(*Service)
 	if !ok {
 		return nil
 	}

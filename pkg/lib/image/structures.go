@@ -3,15 +3,15 @@ package image
 type (
 	// DB Representation
 	ImageFile struct {
-		ImageID uint32 `db:"image_id"`
+		ImageID uint   `db:"image_id"`
 		URL     string `db:"url"`
 	}
 	// DTO
 	Image struct {
-		ID uint32
+		ID uint
 	}
 	// Other
-	Quality int64
+	Quality uint
 )
 
 const (
