@@ -10,7 +10,7 @@ const (
 	timeout = "connection_timeout"
 )
 
-func NewConnectionWithConfig(conf Config) (*rabbitmq.Connection, error) {
+func NewConnectionWithConfig(conf *Config) (*rabbitmq.Connection, error) {
 	t := conf.Data().Query().Get(timeout)
 	if t == "" {
 		conf.Data().Query().Set(timeout, strconv.Itoa(defaultConnectTimeout))
