@@ -2,7 +2,6 @@ package mq
 
 import (
 	"fmt"
-	"net/url"
 	"os"
 	"strconv"
 
@@ -36,7 +35,7 @@ func NewConnection() (*rabbitmq.Connection, error) {
 
 	amqpURI := fmt.Sprintf("amqp://%s:%s@%s:%s//%s?connection_timeout=%s",
 		user,
-		url.PathEscape(pass),
+		pass,
 		host,
 		port,
 		vhost,

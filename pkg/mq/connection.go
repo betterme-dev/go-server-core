@@ -6,14 +6,9 @@ import (
 	"github.com/isayme/go-amqp-reconnect/rabbitmq"
 )
 
-const (
-	timeout = "connection_timeout"
-)
-
-func NewConnectionWithConfig(conf *Config) (*rabbitmq.Connection, error) {
-	t := conf.Data().Query().Get(timeout)
-	if t == "" {
-		conf.Data().Query().Set(timeout, strconv.Itoa(defaultConnectTimeout))
+func NewConnectionWithConfig(conf Config) (*rabbitmq.Connection, error) {
+	if conf.Param(paramConnectionTimeout) == "" {
+		conf.Params[paramConnectionTimeout] = strconv.Itoa(defaultConnectTimeout)
 	}
 	conn, err := rabbitmq.Dial(conf.Dsn())
 	if err != nil {
