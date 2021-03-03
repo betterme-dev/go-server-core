@@ -45,6 +45,10 @@ func (c Config) Dsn() string {
 		}
 		params = strings.Join(pairs, "&")
 	}
+	// avoid double-escape
+	c.Username, _ = url.PathUnescape(c.Username)
+	c.Password, _ = url.PathUnescape(c.Password)
+	// compose
 	dsn := fmt.Sprintf("%s://%s:%s@%s:%s/%s?%s",
 		c.Driver,
 		c.UsernameEscaped(),

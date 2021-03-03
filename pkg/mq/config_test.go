@@ -37,9 +37,11 @@ func TestNewConfigFromDsnSuccess(t *testing.T) {
 	conf.Params["timeout"] = "3"
 	assert.Equal(t, "3", conf.Param("timeout"))
 	// params order is unpredicted, so...
-	res1 := conf.Dsn() == "amqp://user:pass@host.com:1234//vhost?param=12&timeout=3"
-	res2 := conf.Dsn() == "amqp://user:pass@host.com:1234//vhost?timeout=3&param=12"
-	assert.True(t, res1 || res2)
+	vars := []string{
+		"amqp://user:pass@host.com:1234//vhost?param=12&timeout=3",
+		"amqp://user:pass@host.com:1234//vhost?timeout=3&param=12",
+	}
+	assert.Contains(t, vars, conf.Dsn())
 }
 
 func TestNewConfigFromDsnFail(t *testing.T) {
