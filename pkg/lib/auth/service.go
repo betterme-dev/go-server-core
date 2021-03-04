@@ -46,6 +46,10 @@ func (s *Service) AuthByBearerToken(token string) bool {
 		log.Error(err)
 		return false
 	}
+	if usrSes == nil {
+		log.Debugf("Seesion not found")
+		return false
+	}
 	if usrSes.ExpiresAt <= now {
 		log.Debugf("Seesion token is expired")
 		return false
