@@ -10,7 +10,7 @@ import (
 type (
 	Errors []Error
 	Error  struct {
-		Field   string `json:"field"`
+		Field   string `json:"field,omitempty"`
 		Message string `json:"message"`
 		Tag     string `json:"-"`
 	}
