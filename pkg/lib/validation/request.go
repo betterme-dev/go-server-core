@@ -20,6 +20,10 @@ func (e *Errors) Add(err Error) {
 	*e = append(*e, err)
 }
 
+func (e Error) Error() string {
+	return e.Message
+}
+
 const (
 	defaultTag = "binding"
 )
@@ -52,9 +56,10 @@ func ErrorsList(err error) Errors {
 			}
 			errors.Add(Error{Field: f.StructField(), Message: message, Tag: f.Tag()})
 		}
-	default:
-		errors.Add(Error{Field: "unknown", Message: e.Error()})
+	case Error:
+		errors.Add(e)
+	case error:
+		errors.Add(Error{Message: e.Error()})
 	}
-
 	return errors
 }
