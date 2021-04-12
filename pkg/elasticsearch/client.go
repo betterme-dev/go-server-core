@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
+	"time"
 
 	elasticsearch7 "github.com/elastic/go-elasticsearch/v7"
 	log "github.com/sirupsen/logrus"
@@ -20,6 +22,11 @@ func NewClient() (es *ES, err error) {
 		Addresses: []string{
 			viper.GetString("ELASTICSEARCH_ADDRESS"),
 		},
+	}
+	if estm := viper.GetInt("ELASTICSEARCH_TIMEOUT"); estm != 0 {
+		cfg.Transport = &http.Transport{
+			ResponseHeaderTimeout: time.Duration(estm * int(time.Second)),
+		}
 	}
 
 	es = &ES{}
