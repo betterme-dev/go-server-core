@@ -10,7 +10,7 @@ import (
 type (
 	Errors []Error
 	Error  struct {
-		Field   string `json:"field"`
+		Field   string `json:"field,omitempty"`
 		Message string `json:"message"`
 		Tag     string `json:"-"`
 	}
@@ -46,7 +46,7 @@ func ErrorsList(err error) Errors {
 		errors.Add(Error{Field: e.Field, Message: msg, Tag: "type"})
 	case validator.ValidationErrors:
 		for _, f := range e {
-			message := fmt.Sprintf("Field %s expects to be %s", f.StructField(), f.ActualTag())
+			message := fmt.Sprintf("Field %s expects to be %s", fieldName(f), f.ActualTag())
 			if f.Param() != "" {
 				message = fmt.Sprintf("%s with value %s", message, f.Param())
 			}
@@ -57,4 +57,12 @@ func ErrorsList(err error) Errors {
 	}
 
 	return errors
+}
+
+func fieldName(f validator.FieldError) string {
+	name := f.Field()
+	if name == "" {
+		name = f.StructField()
+	}
+	return name
 }
